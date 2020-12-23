@@ -12,9 +12,7 @@
 
 const char test_title[] = "Test kfx";
 
-static struct xen_domctl op = {
-    .cmd = XEN_DOMCTL_createdomain,
-};
+static struct xen_domctl op;
 
 void test_main(void)
 {
@@ -23,7 +21,6 @@ void test_main(void)
         return xtf_error("Failed to get domctl version\n");
 
     printk("Domctl version: %#x. Struct @ %p size %lu\n", interface_version, &op, sizeof(op));
-    op.interface_version = interface_version;
 
     // TODO - fill @create.u.createdomain with fuzzing input
 
@@ -33,6 +30,9 @@ void test_main(void)
 
     cpuid_count(0x13371337, sizeof(op), &eax, &ebx, &ecx, &edx);
     cpuid_count(high, low, &eax, &ebx, &ecx, &edx);
+
+    op.cmd = XEN_DOMCTL_createdomain,
+    op.interface_version = interface_version;
 
     int rc = hypercall_domctl(&op);
     if ( rc == 0 )
