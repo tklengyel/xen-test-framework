@@ -22,12 +22,17 @@ void test_main(void)
     if ( interface_version < 0 )
         return xtf_error("Failed to get domctl version\n");
 
-    printk("Domctl version: %#x\n", interface_version);
+    printk("Domctl version: %#x. Struct @ %p size %lu\n", interface_version, &op, sizeof(op));
     op.interface_version = interface_version;
 
     // TODO - fill @create.u.createdomain with fuzzing input
 
-    cpuid_eax(0x13371337);
+
+    uint32_t eax, ebx, ecx, edx;
+    uint32_t high = (uint64_t)&op >> 32, low = (uint64_t)&op;
+
+    cpuid_count(0x13371337, sizeof(op), &eax, &ebx, &ecx, &edx);
+    cpuid_count(high, low, &eax, &ebx, &ecx, &edx);
 
     int rc = hypercall_domctl(&op);
     if ( rc == 0 )
