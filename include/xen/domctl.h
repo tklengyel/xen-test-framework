@@ -26,6 +26,8 @@ struct xen_domctl_createdomain {
 #define XEN_DOMCTL_CDF_xs_domain      (1U<<_XEN_DOMCTL_CDF_xs_domain)
     uint32_t flags;
 
+    uint32_t iommu_opts;
+
     /*
      * Various domain limits, which impact the quantity of resources (global
      * mapping space, xenheap, etc) a guest may consume.
@@ -34,6 +36,8 @@ struct xen_domctl_createdomain {
     uint32_t max_evtchn_port;
     uint32_t max_grant_frames;
     uint32_t max_maptrack_frames;
+
+    uint32_t vmtrace_size;
 
     struct xen_arch_domainconfig arch;
 };
@@ -44,6 +48,8 @@ struct xen_domctl {
 #define XEN_DOMCTL_destroydomain                  2
     uint32_t interface_version; /* XEN_DOMCTL_INTERFACE_VERSION */
     domid_t  domain;
+    uint16_t _pad[3];
+
     union {
         struct xen_domctl_createdomain      createdomain;
         uint8_t                             pad[128];
