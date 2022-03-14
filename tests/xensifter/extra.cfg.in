@@ -1,0 +1,4 @@
+on_crash="preserve"
+on_reboot="preserve"
+on_poweroff="preserve"
+shadow_memory=128
